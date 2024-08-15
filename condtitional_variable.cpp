@@ -5,40 +5,36 @@
 
 using namespace std;
 
-long long count = 0;
-mutex mtx;
-condition_variable cv;
-bool ready = false; // Condition flag
+int sharedData = 0;     // Shared variable
+bool dataReady = false; // Flag to indicate if data is ready
+mutex mtx;              // Mutex to protect access to sharedData and dataReady
+condition_variable cv;  // Condition variable for synchronization
 
-void taskB()
+void producer()
 {
-    for (int i = 0; i < 1000000; i++)
     {
-        count += i;
-    }
-    {
-        lock_guard<mutex> lock(mtx);
-        ready = true; // Signal that the task is complete
+        lock_guard<mutex> lock(mtx); // Lock the mutex
+        sharedData = 42;             // Set the shared data
+        dataReady = true;            // Indicate that data is ready
     }
     cv.notify_one(); // Notify one waiting thread
 }
 
-void taskA()
+void consumer()
 {
-    unique_lock<mutex> lock(mtx);
+    unique_lock<mutex> lock(mtx); // Lock the mutex
     cv.wait(lock, []
-            { return ready; }); // Wait until ready becomes true
-    // Perform some action after taskB is done
-    printf("Count is: %lld\n", count);
+            { return dataReady; });                  // Wait until dataReady is true
+    cout << "Data received: " << sharedData << endl; // Use the data
 }
 
 int main()
 {
-    thread t2(taskB);
-    thread t1(taskA);
+    thread prod(producer);
+    thread cons(consumer);
 
-    t2.join();
-    t1.join();
+    prod.join();
+    cons.join();
 
     return 0;
 }
