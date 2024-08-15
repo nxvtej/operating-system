@@ -11,7 +11,7 @@ only applicable to two threads with single resources
 conditional variable
 no busy waiting
 still for single resource
-![image](https://github.com/user-attachments/assets/7dd808ab-ecd2-4405-ac3b-100b80db6f71)
+![image](https://github.com/user-attachments/assets/f9603816-a333-472d-a6ee-1ab6e56f1d4a)
 
 
 semaphore 
