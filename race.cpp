@@ -1,25 +1,17 @@
 #include <iostream>
 #include <thread>
-#include <unistd.h>
+#include <mutex> // Include mutex for synchronization
 using namespace std;
 
 long long count = 0;
+mutex mtx; // Declare a mutex
 
 void taskB()
 {
-
     for (int i = 0; i < 1000000; i++)
     {
-        count += i;
-    }
-}
-
-void taskA()
-{
-
-    for (int i = 1; i < 5; i++)
-    {
-        count *= i;
+        lock_guard<mutex> lock(mtx); // Lock the mutex
+        count += i;                  // Safely update the shared variable
     }
 }
 
@@ -30,6 +22,6 @@ int main()
     t2.join();
     t3.join();
 
-    printf("%lld", count);
+    printf("%lld\n", count); // Print the result
     return 0;
 }
