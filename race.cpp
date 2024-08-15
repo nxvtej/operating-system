@@ -3,14 +3,23 @@
 #include <unistd.h>
 using namespace std;
 
-int count = 0;
+long long count = 0;
 
 void taskB()
 {
 
-    for (int i = 0; i < 1000; i++)
+    for (int i = 0; i < 1000000; i++)
     {
         count += i;
+    }
+}
+
+void taskA()
+{
+
+    for (int i = 1; i < 5; i++)
+    {
+        count *= i;
     }
 }
 
@@ -21,6 +30,6 @@ int main()
     t2.join();
     t3.join();
 
-    printf("%d", count);
+    printf("%lld", count);
     return 0;
 }
